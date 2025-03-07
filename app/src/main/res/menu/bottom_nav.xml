@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home"
+        android:title="হোম"
+        android:icon="@drawable/home_icon"
+        />
+
+    <item android:id="@+id/bestSell"
+        android:title="বেস্টসেল"
+        android:icon="@drawable/achieve"
+        />
+
+<!--    <item android:id="@+id/cart"-->
+<!--        android:title="পছন্দ"-->
+<!--        android:icon="@drawable/trolley"-->
+<!--        />-->
+
+    <item android:id="@+id/library"
+        android:title="পাঠাগার"
+        android:icon="@drawable/book"
+        />
+
+    <item android:id="@+id/settings"
+        android:title="Settings"
+        android:icon="@drawable/settings"
+        />
+
+</menu>

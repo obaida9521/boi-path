@@ -1,0 +1,56 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BoiPath" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+         <item name="colorPrimary">@color/secondaryBg</item>
+
+        <item name="android:windowLightStatusBar">false</item>
+        <!--        <item name="android:statusBarColor" tools:ignore="NewApi" tools:targetApi="lollipop">@color/toolbar_night</item>-->
+
+        <item name="android:windowBackground">@color/secondaryBg</item>
+    </style>
+
+
+<!--    <style name="dialogAnimation">-->
+<!--        <item name="android:windowEnterAnimation">@anim/zoom_in</item>-->
+<!--        <item name="android:windowExitAnimation">@anim/zoom_out</item>-->
+<!--    </style>-->
+
+
+    <style name="CircularImg">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="normalBackground">
+        <item name="android:background">@color/black</item>
+    </style>
+
+
+    <style name="colorContrast">
+        <item name="android:background">@color/darkish</item>
+    </style>
+
+    <style name="colorContrastTint">
+        <item name="android:backgroundTint">@color/secondaryBg</item>
+    </style>
+
+    <style name="CustomStyle">
+        <item name="android:background">@drawable/shape_bg_dark</item>
+    </style>
+
+
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    </style>
+
+    <style name="dialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/zoom_in</item>
+        <item name="android:windowExitAnimation">@anim/zoom_out</item>
+    </style>
+</resources>

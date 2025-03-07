@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/normalBackground"
+        >
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            app:shapeAppearanceOverlay="@style/CircularImg"
+            android:layout_gravity="center"
+            app:tint="?attr/textColorAlertDialogListItem"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:src="@drawable/base_icon"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/baseline_person_24"
+            android:layout_toLeftOf="@+id/nav"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:tint="?attr/textColorAlertDialogListItem"
+            app:shapeAppearanceOverlay="@style/CircularImg"
+            app:shapeAppearance="@style/CircularImg"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            />
+
+        <ImageView
+            android:id="@+id/nav"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/trolley"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:padding="@dimen/_2sdp"
+            app:tint="?attr/textColorAlertDialogListItem" />
+
+
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/bottomNav"
+        />
+
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav"
+        style="@style/normalBackground"
+        app:labelVisibilityMode="labeled"
+        />
+
+
+</RelativeLayout>

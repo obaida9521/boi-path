@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154633837525",
+    "project_id": "boi-path-app",
+    "storage_bucket": "boi-path-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154633837525:android:5e3c7666faea5141013b5c",
+        "android_client_info": {
+          "package_name": "com.developerobaida.boipath"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCys2xPGorpEDJgD3dgcrnOJZg8N9-dBuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

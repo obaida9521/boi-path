@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.BookReaderActivity"
+    >
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/back_24"
+        app:navigationIconTint="?attr/textColorAlertDialogListItem"
+        app:title="@string/app_name"
+        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="@dimen/_10sdp"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+
+                >
+
+                <Button
+                    android:id="@+id/prevPage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/secondaryBg"
+                    android:textColor="@color/white"
+                    android:text="Previous" />
+
+                <Button
+                    android:id="@+id/nextPage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/cream"
+                    android:textColor="@color/darkish"
+                    android:text="Next" />
+
+
+                <Button
+                    android:id="@+id/increaseTextSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkish"
+                    android:textColor="@color/white"
+                    android:text="A+"/>
+
+                <Button
+                    android:id="@+id/decreaseTextSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkish"
+                    android:textColor="@color/white"
+                    android:text="A-"/>
+
+                <Button
+                    android:id="@+id/alignLeft"
+                    android:layout_width="wrap_content"
+                    android:backgroundTint="@color/darkish"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
+                    android:text="L"/>
+
+                <Button
+                    android:id="@+id/alignCenter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkish"
+                    android:textColor="@color/white"
+                    android:text="C"/>
+
+                <Button
+                    android:id="@+id/alignRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkish"
+                    android:textColor="@color/white"
+                    android:text="R"/>
+
+                <Button
+                    android:id="@+id/alignJustify"
+                    android:layout_width="wrap_content"
+                    android:backgroundTint="@color/darkish"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
+                    android:text="J"/>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </FrameLayout>
+
+
+</LinearLayout>
