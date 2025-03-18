@@ -1,18 +1,16 @@
 package com.developerobaida.boipath.api
 
 import com.developerobaida.boipath.model.BookModel
+import com.developerobaida.boipath.model.CategoryModel
 import com.developerobaida.boipath.model.RatingModel
 import com.developerobaida.boipath.model.ReviewModel
 import com.developerobaida.boipath.model.WriterModel
-import com.google.gson.annotations.SerializedName
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiInterface {
@@ -23,6 +21,16 @@ interface ApiInterface {
 
     @GET("api/books/{id}")
     fun getBookById(@Path("id") id: Int): Call<List<BookModel>>
+
+
+    @GET("api/books/search/{book_name}")
+    fun searchBook(@Path("book_name") bookName: String): Call<List<BookModel>>
+
+    @GET("api/books/author/{author_id}")
+    fun getBookByWriterId(@Path("author_id") id: Int): Call<List<BookModel>>
+
+    @GET("api/books/best_sell/{category}")
+    fun getBestSell(@Path("category") category: String): Call<List<BookModel>>
 
 
 
@@ -71,5 +79,10 @@ interface ApiInterface {
         @Field("rating") rating: String
     ): Call<RatingModel>
 
+
+    //============  Category  =======================  Category  ====================  Category  =============================  Category  ===================||||||
+
+    @GET("api/category")
+    fun getCategories(): Call<List<CategoryModel>>
 
 }

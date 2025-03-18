@@ -1,10 +1,13 @@
 package com.developerobaida.boipath.adapter
 
+import android.content.Intent
+import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.developerobaida.boipath.R
+import com.developerobaida.boipath.activity.BookDetailsActivity
 import com.developerobaida.boipath.api.ApiController
 import com.developerobaida.boipath.databinding.ItemBook3Binding
 import com.developerobaida.boipath.model.BookModel
@@ -16,6 +19,7 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
+
 class BestSellAdapter(val list: List<BookModel>) : RecyclerView.Adapter<BestSellAdapter.BookView>() {
     val apiService = ApiController.instance?.api
 
@@ -23,18 +27,18 @@ class BestSellAdapter(val list: List<BookModel>) : RecyclerView.Adapter<BestSell
         val langFormat = NumberFormat.getInstance(Locale("bn", "BD"))
 
         fun bind(book: BookModel, showRating: (Int, (Float,Int) -> Unit) -> Unit) {
+            binding.price2.paintFlags = binding.price2.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
             binding.bookName.text = book.bookName
             binding.writer.text = book.author
 
             val price = langFormat.format(book.price)
             binding.price.text = "$price ৳"
 
+            binding.ranking.text = "#${(position+1)}"
 
-            if (book.bookCover!=null){
-                Picasso.get().load(book.bookCover).placeholder(R.drawable.pic1).into(binding.bookCover)
-            } else binding.bookCover.setImageResource(R.drawable.pic1)
+            Picasso.get().load(book.bookCover).placeholder(R.drawable.pic6).error(R.drawable.pic6).into(binding.bookCover)
 
-            binding.bookCover.setImageResource(R.drawable.pic1)
 
             showRating(book.id) { rating,ratingCount ->
 
@@ -42,6 +46,12 @@ class BestSellAdapter(val list: List<BookModel>) : RecyclerView.Adapter<BestSell
 
                 val count = langFormat.format(ratingCount)
                 binding.ratingCount.text = "($count)"
+            }
+
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context, BookDetailsActivity::class.java)
+                intent.putExtra("bookId",book.id)
+                binding.root.context.startActivity(intent)
             }
         }
     }

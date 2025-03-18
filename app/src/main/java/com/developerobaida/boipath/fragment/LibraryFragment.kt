@@ -21,16 +21,15 @@ class LibraryFragment : Fragment() {
         binding = FragmentLibraryBinding.inflate(inflater,container,false)
         val list = listOf(
 
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,""),
-            BookModel(0,"","","","",0,0,0.0,"",0,"")
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"",""),
+            BookModel(0,"","","","",0,0,0.0,"",0,"","")
         )
         var adapter = LibraryBookAdapter(list)
         binding.rec.adapter = adapter

@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/_5sdp">
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardCover"
         android:layout_width="wrap_content"
@@ -13,7 +14,7 @@
         >
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/_130sdp"
+            android:layout_height="@dimen/_100sdp"
             android:maxWidth="@dimen/_260sdp"
             android:id="@+id/bookCover"
             android:adjustViewBounds="true"
@@ -25,10 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_toRightOf="@+id/cardCover"
-        android:layout_toLeftOf="@+id/cardSerial"
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_toRightOf="@+id/cardCover"
+        android:layout_toLeftOf="@+id/del"
         >
         <TextView
             android:id="@+id/bookName"
@@ -54,32 +55,6 @@
             android:fontFamily="@font/noto_serif"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_5sdp"
-            >
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?attr/ratingBarStyleSmall"
-                android:id="@+id/ratingView"
-                android:numStars="5"
-                android:stepSize="0.25"
-                android:isIndicator="true"
-                android:paddingTop="@dimen/_2sdp"
-                />
-            <TextView
-                android:id="@+id/ratingCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:text="(0)"/>
-
-        </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -93,7 +68,7 @@
                 android:gravity="start"
                 android:text="০০৳"
                 android:fontFamily="@font/noto_serif"
-                android:textSize="@dimen/_20ssp"
+                android:textSize="@dimen/_18ssp"
                 />
 
             <TextView
@@ -112,20 +87,22 @@
 
     </LinearLayout>
 
-    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
-        android:id="@+id/cardSerial"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/del"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         >
-        <TextView
-            android:id="@+id/ranking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="#1"
+        <ImageView
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:src="@drawable/delete_24"
             android:padding="@dimen/_5sdp"
-            android:textStyle="bold"
-            />
-    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+            app:tint="@color/orange" />
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

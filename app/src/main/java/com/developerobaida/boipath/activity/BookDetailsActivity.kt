@@ -11,10 +11,15 @@ import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developerobaida.boipath.R
+import com.developerobaida.boipath.adapter.BookAdapter
 import com.developerobaida.boipath.adapter.ReviewAdapter
 import com.developerobaida.boipath.api.ApiController
+import com.developerobaida.boipath.data.local.entity.CartEntity
+import com.developerobaida.boipath.data.repository.CartRepository
 import com.developerobaida.boipath.databinding.ActivityBookDetailsBinding
 import com.developerobaida.boipath.model.BookModel
 import com.developerobaida.boipath.model.RatingModel
@@ -23,6 +28,9 @@ import com.developerobaida.boipath.model.WriterModel
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,14 +39,18 @@ import java.util.Locale
 
 class BookDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBookDetailsBinding
+    private lateinit var repository: CartRepository
     val apiController = ApiController.instance
     val apiInterface = apiController?.api
     val langFormat = NumberFormat.getInstance(Locale("bn", "BD"))
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBookDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        repository = CartRepository(this)
 
         val bookId = intent.getIntExtra("bookId",0)
         fetchBookDetails(bookId)
@@ -48,11 +60,6 @@ class BookDetailsActivity : AppCompatActivity() {
             super.onBackPressed()
         }
 
-
-        binding.bookCover.setOnClickListener{
-            val intent = Intent(this,WriterActivity::class.java)
-            startActivity(intent)
-        }
 
         binding.read.setOnClickListener{
             val intent = Intent(this,BookReaderActivity::class.java)
@@ -68,8 +75,6 @@ class BookDetailsActivity : AppCompatActivity() {
 
     }
 
-
-
     private fun fetchBookDetails(id: Int){
         apiInterface?.getBookById(id)?.enqueue(object : Callback<List<BookModel>>{
             override fun onResponse(call: Call<List<BookModel>>, response: Response<List<BookModel>>) {
@@ -81,14 +86,38 @@ class BookDetailsActivity : AppCompatActivity() {
                         binding.aboutBook.text = book[0].description
 
                         fetchAuthor(book[0].authorId)
+                        fetchBooks(book[0].authorId)
+
+                        binding.writerProfile.setOnClickListener {
+                            val intent = Intent(this@BookDetailsActivity,WriterActivity::class.java)
+                            intent.putExtra("author_id",book[0].authorId)
+                            startActivity(intent)
+                        }
 
                         binding.page.text = langFormat.format(book[0].pages)
                         binding.price.text = langFormat.format(book[0].price)+"৳"
 
-                        if (book[0].bookCover !=null){
-                            Picasso.get().load(book[0].bookCover).placeholder(R.drawable.pic1).into(binding.bookCover)
-                        }else binding.bookCover.setImageResource(R.drawable.pic1)
+                        Picasso.get().load(book[0].bookCover).placeholder(R.drawable.dwewf).error(R.drawable.dwewf).into(binding.bookCover)
 
+                        binding.addToCart.setOnClickListener {
+
+                            val cartItem = CartEntity(
+                                id = null,
+                                bookName = book[0].bookName,
+                                bookCover = book[0].bookCover,
+                                author = book[0].author,
+                                pages = book[0].pages,
+                                price = book[0].price,
+                                categories = book[0].categories,
+                                bookId = book[0].id
+                            )
+
+                            lifecycleScope.launch {
+                                repository.insertItem(cartItem)
+                            }
+
+                            Toast.makeText(this@BookDetailsActivity, "Book added to cart!", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }else {
                     Log.e("API_ERROR", "Book Response not successful: ${response.code()} ${response.message()}")
@@ -100,6 +129,32 @@ class BookDetailsActivity : AppCompatActivity() {
                 Log.e("API_ERROR", "Book Failed: ${p1.message}")
             }
 
+        })
+    }
+
+    private fun fetchBooks(id: Int) {
+
+        apiInterface?.getBookByWriterId(id)?.enqueue(object : Callback<List<BookModel>> {
+            override fun onResponse(call: Call<List<BookModel>>, response: Response<List<BookModel>>) {
+                if (response.isSuccessful) {
+                    val books = response.body()
+                    books?.let {
+                        Log.d("API_RESPONSE", "Books: ${Gson().toJson(books)}")
+
+                        val adapter = BookAdapter(books)
+                        binding.recBook.adapter =adapter
+                        binding.recBook.layoutManager = LinearLayoutManager(this@BookDetailsActivity, LinearLayoutManager.HORIZONTAL,false)
+                        binding.recBook.hasFixedSize()
+                    }
+                } else {
+                    Log.e("API_ERROR", "Response not successful: ${response.code()} ${response.message()}")
+                    Log.e("API_ERROR", "Error body: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<BookModel>>, t: Throwable) {
+                Log.e("API_ERROR", "Failed to fetch books: ${t.message}")
+            }
         })
     }
 

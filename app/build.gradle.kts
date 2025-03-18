@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -62,21 +63,17 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
 
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:$room_version")
+
+    implementation("androidx.room:room-paging:$room_version")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
+}
 //    implementation("com.positiondev.epublib:epublib-core:3.1") {
 //        exclude(group = "net.sf.kxml", module = "kxml2")
 //    }
-
-
-
-    val room_version = "2.6.1"
-
-    implementation("androidx.room:room-runtime:$room_version")
-    // If this project only uses Java source, use the Java annotationProcessor
-    // No additional plugins are necessary
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
-    // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$room_version")
-}

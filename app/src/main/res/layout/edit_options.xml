@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    >
+
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/_18sdp"
+        android:layout_marginTop="@dimen/_18sdp"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/prevPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/secondaryBg"
+                android:textColor="@color/white"
+                android:text="Previous" />
+
+            <Button
+                android:id="@+id/nextPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/cream"
+                android:textColor="@color/darkish"
+                android:text="Next" />
+
+
+            <Button
+                android:id="@+id/increaseTextSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:text="A+"/>
+
+            <Button
+                android:id="@+id/decreaseTextSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:text="A-"/>
+
+            <Button
+                android:id="@+id/alignLeft"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:text="L"/>
+
+            <Button
+                android:id="@+id/alignCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:text="C"/>
+
+            <Button
+                android:id="@+id/alignRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:text="R"/>
+
+            <Button
+                android:id="@+id/alignJustify"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:text="J"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+</com.google.android.material.card.MaterialCardView>

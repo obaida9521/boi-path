@@ -50,4 +50,6 @@
     </style>
 
     <style name="Theme.BoiPath" parent="Base.Theme.BoiPath" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>

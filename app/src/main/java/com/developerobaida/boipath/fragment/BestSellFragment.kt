@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developerobaida.boipath.R
+import com.developerobaida.boipath.SelectionBottomSheet
 import com.developerobaida.boipath.adapter.BestSellAdapter
 import com.developerobaida.boipath.adapter.BookAdapter
 import com.developerobaida.boipath.api.ApiController
@@ -30,15 +31,23 @@ class BestSellFragment : Fragment() {
     ): View? {
         binding = FragmentBestSellBinding.inflate(inflater,container,false)
 
-        fetchBooks()
+        binding.card.setOnClickListener {
+            val bottomSheet = SelectionBottomSheet { selectedText ->
+                binding.tvCat.text = selectedText
+                fetchBooks(selectedText)
+            }
+            bottomSheet.show(childFragmentManager, "SelectionBottomSheet")
+        }
+
+        fetchBooks("islamic")
 
         return binding.root
     }
 
 
-    private fun fetchBooks() {
+    private fun fetchBooks(category: String) {
 
-        apiService?.getBooks()?.enqueue(object : Callback<List<BookModel>> {
+        apiService?.getBestSell(category)?.enqueue(object : Callback<List<BookModel>> {
             override fun onResponse(call: Call<List<BookModel>>, response: Response<List<BookModel>>) {
                 if (response.isSuccessful) {
                     val books = response.body()
@@ -62,4 +71,11 @@ class BestSellFragment : Fragment() {
         })
     }
 
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
 }

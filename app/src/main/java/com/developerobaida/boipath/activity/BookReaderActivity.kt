@@ -9,6 +9,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.developerobaida.boipath.databinding.ActivityBookReaderBinding
+import org.json.JSONArray
 import org.w3c.dom.Element
 import java.io.File
 import java.io.FileOutputStream
@@ -19,12 +20,11 @@ import javax.xml.parsers.DocumentBuilderFactory
 class BookReaderActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookReaderBinding
     private var currentPageIndex = 0
-    private var currentTextSize = 30
+    private var currentTextSize = 40
 
     private lateinit var htmlFiles: List<String>
     private lateinit var targetDir: File
     private var opfDir: String = ""
-    private val initialFontFamily = "serif"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,32 +47,90 @@ class BookReaderActivity : AppCompatActivity() {
         setEpub()
         loadCurrentPage()
 
-        binding.nextPage.setOnClickListener { goToNextPage() }
-        binding.prevPage.setOnClickListener { goToPreviousPage() }
+        binding.options.nextPage.setOnClickListener { goToNextPage() }
+        binding.options.prevPage.setOnClickListener { goToPreviousPage() }
 
-        binding.increaseTextSize.setOnClickListener {
+        binding.options.increaseTextSize.setOnClickListener {
             currentTextSize += 2
             adjustTextSize(currentTextSize)
         }
 
-        binding.decreaseTextSize.setOnClickListener {
+        binding.options.decreaseTextSize.setOnClickListener {
             currentTextSize -= 2
             adjustTextSize(currentTextSize)
         }
-        binding.alignLeft.setOnClickListener { adjustTextAlignment("left") }
-        binding.alignCenter.setOnClickListener { adjustTextAlignment("center") }
-        binding.alignRight.setOnClickListener { adjustTextAlignment("right") }
-        binding.alignJustify.setOnClickListener { adjustTextAlignment("justify") }
+        binding.options.alignLeft.setOnClickListener { adjustTextAlignment("left") }
+        binding.options.alignCenter.setOnClickListener { adjustTextAlignment("center") }
+        binding.options.alignRight.setOnClickListener { adjustTextAlignment("right") }
+        binding.options.alignJustify.setOnClickListener { adjustTextAlignment("justify") }
 
-        val htmlFile = File(targetDir, htmlFiles.first())
-
-
-
-        //loadHtmlIntoWebView(binding.webView, htmlFile, targetDir)
 
     }
+    private var pages: MutableList<String> = mutableListOf()
+    private var currentPageSegment = 0
+
+    private fun paginateContent(htmlFile: File) {
+        try {
+            val htmlContent = htmlFile.readText()
+            val js = """
+            function splitContent() {
+                let pageHeight = window.innerHeight; 
+                let body = document.body;
+                let content = body.innerHTML;
+                let sections = [];
+                let temp = "";
+                let childNodes = Array.from(body.childNodes);
+                let heightAccumulated = 0;
+                
+                for (let i = 0; i < childNodes.length; i++) {
+                    temp += childNodes[i].outerHTML || childNodes[i].textContent;
+                    body.innerHTML = temp;
+                    heightAccumulated = document.body.scrollHeight;
+                    
+                    if (heightAccumulated >= pageHeight) {
+                        sections.push(temp);
+                        temp = "";
+                    }
+                }
+                if (temp.length > 0) sections.push(temp);
+                
+                return sections;
+            }
+            splitContent();
+        """.trimIndent()
+
+            binding.webView.evaluateJavascript(js) { result ->
+                val jsonArray = JSONArray(result)
+                pages.clear()
+                for (i in 0 until jsonArray.length()) {
+                    pages.add(jsonArray.getString(i))
+                }
+                currentPageSegment = 0
+                loadCurrentSegment()
+            }
+        } catch (e: IOException) {
+            Log.e("EpubReader", "Error processing HTML for pagination", e)
+        }
+    }
+
+    private fun loadCurrentSegment() {
+        if (currentPageSegment in pages.indices) {
+            val modifiedHtmlContent = """
+            <html>
+            <head>
+                <style>
+                    body { font-size: ${currentTextSize}px; margin: 10px; padding: 10px; }
+                </style>
+            </head>
+            <body>${pages[currentPageSegment]}</body>
+            </html>
+        """.trimIndent()
+            binding.webView.loadDataWithBaseURL(null, modifiedHtmlContent, "text/html", "UTF-8", null)
+        }
+    }
+
+
     private fun setEpub(){
-        //val epubFileName = "famouspaintings.epub"
         val epubFileName = "mhdaifer.epub"
         val epubFile = File(filesDir, epubFileName)
         if (!epubFile.exists()) copyEpubFromAssets(this, epubFileName, epubFile)
@@ -112,23 +170,42 @@ class BookReaderActivity : AppCompatActivity() {
             val htmlPath = if (opfDir.isNotEmpty()) "$opfDir/${htmlFiles[currentPageIndex]}" else htmlFiles[currentPageIndex]
             val htmlFile = File(targetDir, htmlPath)
             Log.d("EpubReader", "Final HTML Path: ${htmlFile.absolutePath}")
-            if (htmlFile.exists()) loadHtmlIntoWebView(binding.webView, htmlFile, targetDir)
-            else Log.e("EpubReader", "HTML file does not exist: ${htmlFile.absolutePath}")
+            if (htmlFile.exists()) {
+                binding.webView.webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+                        adjustTextSize(currentTextSize)
+                    }
+                }
+                loadHtmlIntoWebView(binding.webView, htmlFile, targetDir)
+            } else {
+                Log.e("EpubReader", "HTML file does not exist: ${htmlFile.absolutePath}")
+            }
         }
     }
 
     private fun goToNextPage() {
-        if (currentPageIndex < htmlFiles.size - 1) {
-            currentPageIndex++
-            loadCurrentPage()
-        } else Toast.makeText(this, "End of book", Toast.LENGTH_SHORT).show()
+        if (currentPageSegment < pages.size - 1) {
+            currentPageSegment++
+            loadCurrentSegment()
+        } else {
+            if (currentPageIndex < htmlFiles.size - 1) {
+                currentPageIndex++
+                loadCurrentPage()
+            } else Toast.makeText(this, "End of book", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun goToPreviousPage() {
-        if (currentPageIndex > 0) {
-            currentPageIndex--
-            loadCurrentPage()
-        } else Toast.makeText(this, "Already at first page", Toast.LENGTH_SHORT).show()
+        if (currentPageSegment > 0) {
+            currentPageSegment--
+            loadCurrentSegment()
+        } else {
+            if (currentPageIndex > 0) {
+                currentPageIndex--
+                loadCurrentPage()
+            } else Toast.makeText(this, "Already at first page", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun adjustTextAlignment(alignment: String) {
@@ -225,24 +302,31 @@ class BookReaderActivity : AppCompatActivity() {
         try {
             val htmlContent = htmlFile.readText()
             val fixedWidthCSS = """
-            <style>
-                body {
-                    width: 100vw;
-                    overflow-x: hidden;
-                    margin: 0;
-                    padding: 0;
-                    font-size: ${currentTextSize}px;
-                }
-              
-                img, svg, table, div {
-                    max-width: 100%;
-                    height: auto;
-                }
-                p, div, span, h1, h2, h3, h4, h5, h6 {
-                    text-align: left;
-                    font-size: ${currentTextSize}px;
-                }
-            </style>
+        <style>
+            body {
+                width: 100vw;
+                overflow-x: hidden;
+                margin: 0;
+                padding: 0;
+                font-size: ${currentTextSize}px; /* Ensure initial font size */
+            }
+            img, svg, table, div {
+                max-width: 100%;
+                height: auto;
+            }
+            p, div, span, h1, h2, h3, h4, h5, h6 {
+                text-align: left;
+                font-size: ${currentTextSize}px;
+            }
+        </style>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.body.style.fontSize = '${currentTextSize}px';
+                document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6').forEach(function(element) {
+                    element.style.fontSize = '${currentTextSize}px';
+                });
+            });
+        </script>
         """.trimIndent()
 
             val modifiedHtmlContent = htmlContent.replace("</head>", "$fixedWidthCSS</head>")
@@ -253,10 +337,25 @@ class BookReaderActivity : AppCompatActivity() {
             Log.e("EpubReader", "Error reading HTML file", e)
         }
     }
+}
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
+/*
+override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         newConfig.screenWidthDp
         loadCurrentPage()
     }
-}
+
+private fun goToNextPage() {
+        if (currentPageIndex < htmlFiles.size - 1) {
+            currentPageIndex++
+            loadCurrentPage()
+        } else Toast.makeText(this, "End of book", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun goToPreviousPage() {
+        if (currentPageIndex > 0) {
+            currentPageIndex--
+            loadCurrentPage()
+        } else Toast.makeText(this, "Already at first page", Toast.LENGTH_SHORT).show()
+    }*/

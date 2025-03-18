@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.developerobaida.boipath.databinding.ItemTopicsBinding
-import com.developerobaida.boipath.model.TopicsModel
+import com.developerobaida.boipath.model.CategoryModel
 
-class TopicsAdapter(val list: List<TopicsModel>) : RecyclerView.Adapter<TopicsAdapter.ViewHolder>() {
+class CategoryAdapter(val list: List<CategoryModel>) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemTopicsBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(model: TopicsModel){
-            binding.topic.text = model.topic
+        fun bind(model: CategoryModel){
+            binding.topic.text = model.categoryName
         }
     }
 

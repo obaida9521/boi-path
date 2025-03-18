@@ -103,6 +103,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
+                    android:id="@+id/addToCart"
                     >
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
@@ -263,6 +264,7 @@
                 />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/writerProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/_5sdp"
@@ -369,8 +371,13 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/noto_serif"
-                android:layout_marginBottom="@dimen/_100sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 />
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_100sdp"
+                android:id="@+id/recBook"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

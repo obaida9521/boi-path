@@ -2,7 +2,6 @@ package com.developerobaida.boipath.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.developerobaida.boipath.api.ApiController
 import com.developerobaida.boipath.databinding.ItemReviewBinding

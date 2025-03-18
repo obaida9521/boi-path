@@ -9,9 +9,10 @@ data class BookModel(
     @SerializedName("book_name") val bookName: String,
     @SerializedName("author") val author: String,
     @SerializedName("author_id") val authorId: Int,
-    @SerializedName("pages") val pages: Int?,
-    @SerializedName("price") val price: Double?,
+    @SerializedName("pages") val pages: Int,
+    @SerializedName("price") val price: Double,
     @SerializedName("description") val description: String?,
     @SerializedName("total_sell") val totalSell: Int?,
-    @SerializedName("published_date") val publishedDate: String?
+    @SerializedName("published_date") val publishedDate: String?,
+    @SerializedName("categories") val categories: String
 )

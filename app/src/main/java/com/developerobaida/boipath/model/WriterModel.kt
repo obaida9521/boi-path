@@ -7,5 +7,6 @@ data class WriterModel(
     @SerializedName("name") val name:String,
     @SerializedName("image") val image: String,
     @SerializedName("total_books") val totalBooks: Int,
-    @SerializedName("followers") val followers: Int
+    @SerializedName("followers") val followers: Int,
+    @SerializedName("about") val about: String?
 )

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.CartActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/app_name"
+        app:navigationIcon="@drawable/back_24"
+        app:navigationIconTint="?attr/textColorAlertDialogListItem"
+        android:id="@+id/toolbar"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear All"
+            android:layout_gravity="end"
+            android:textStyle="bold"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:id="@+id/clear"/>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cartRec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/payLay"
+            />
+        <LinearLayout
+            android:id="@+id/payLay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            style="@style/CustomStyle"
+            android:layout_alignParentBottom="true"
+            >
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_16ssp"
+                    />
+                <TextView
+                    android:id="@+id/priceTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tk 00"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_16ssp"
+                    android:layout_alignParentEnd="true"
+                    />
+            </RelativeLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/darkish"
+                app:cornerRadius="@dimen/_5sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:text="Pay now"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

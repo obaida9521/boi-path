@@ -27,20 +27,31 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
-                <com.google.android.material.textfield.TextInputLayout
+                <LinearLayout
+                    android:id="@+id/search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="এখানে খুঁজুন"
-                    android:layout_marginStart="@dimen/_12sdp"
-                    android:layout_marginEnd="@dimen/_12sdp"
-                    app:startIconDrawable="@drawable/round_search_24"
-                    app:hintTextColor="?attr/textColorAlertDialogListItem"
+                    android:orientation="horizontal"
+                    style="@style/CustomStyle"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:clickable="true"
                     >
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:src="@drawable/round_search_24"
+                        android:layout_marginStart="@dimen/_7sdp"
+                        app:tint="?attr/textColorAlertDialogListItem" />
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/inputSearch"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:text="এখানে খুঁজুন"
+                        android:layout_gravity="center"
+                        />
+                </LinearLayout>
+
                 <include layout="@layout/pager_item"/>
 
                 <LinearLayout
@@ -53,11 +64,8 @@
                     android:paddingBottom="@dimen/_7sdp"
                     >
                     <RelativeLayout
-                        android:id="@+id/freeBook"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
                         >
                         <TextView
                             android:layout_width="wrap_content"
@@ -69,14 +77,28 @@
                             android:fontFamily="@font/noto_serif"
                             android:textStyle="bold"/>
 
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="@dimen/_20sdp"
-                            android:src="@drawable/back_24"
-                            android:rotation="180"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/freeBook"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/_10sdp"/>
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            app:cardCornerRadius="@dimen/_5sdp"
+                            android:clickable="true"
+                            android:foreground="?attr/selectableItemBackground"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="See more"
+                                android:fontFamily="@font/noto_serif"
+                                android:padding="@dimen/_3sdp"
+                                android:textStyle="bold"/>
+
+                        </androidx.cardview.widget.CardView>
+
                     </RelativeLayout>
 
 
@@ -99,11 +121,8 @@
                     android:paddingBottom="@dimen/_7sdp"
                     >
                     <RelativeLayout
-                        android:id="@+id/history"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
                         >
                         <TextView
                             android:layout_width="wrap_content"
@@ -115,14 +134,27 @@
                             android:fontFamily="@font/noto_serif"
                             android:textStyle="bold"/>
 
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="@dimen/_20sdp"
-                            android:src="@drawable/back_24"
-                            android:rotation="180"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/history"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/_10sdp"/>
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            app:cardCornerRadius="@dimen/_5sdp"
+                            android:clickable="true"
+                            android:foreground="?attr/selectableItemBackground"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="See more"
+                                android:fontFamily="@font/noto_serif"
+                                android:padding="@dimen/_3sdp"
+                                android:textStyle="bold"/>
+
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -144,11 +176,8 @@
                     android:paddingBottom="@dimen/_7sdp"
                     >
                     <RelativeLayout
-                        android:id="@+id/newBooks"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
                         >
                         <TextView
                             android:layout_width="wrap_content"
@@ -160,14 +189,27 @@
                             android:fontFamily="@font/noto_serif"
                             android:textStyle="bold"/>
 
-                        <ImageView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="@dimen/_20sdp"
-                            android:src="@drawable/back_24"
-                            android:rotation="180"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/newBooks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/_10sdp"/>
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            app:cardCornerRadius="@dimen/_5sdp"
+                            android:clickable="true"
+                            android:foreground="?attr/selectableItemBackground"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="See more"
+                                android:fontFamily="@font/noto_serif"
+                                android:padding="@dimen/_3sdp"
+                                android:textStyle="bold"/>
+
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -190,7 +232,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/topicsRec"
+                    android:id="@+id/categoryRec"
                     />
             </LinearLayout>
 

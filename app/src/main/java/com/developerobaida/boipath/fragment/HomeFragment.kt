@@ -1,6 +1,7 @@
 package com.developerobaida.boipath.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -15,13 +16,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developerobaida.boipath.R
+import com.developerobaida.boipath.activity.SearchActivity
 import com.developerobaida.boipath.adapter.BookAdapter
-import com.developerobaida.boipath.adapter.TopicsAdapter
+import com.developerobaida.boipath.adapter.CategoryAdapter
 import com.developerobaida.boipath.adapter.WriterAdapter
 import com.developerobaida.boipath.api.ApiController
 import com.developerobaida.boipath.databinding.FragmentHomeBinding
 import com.developerobaida.boipath.model.BookModel
-import com.developerobaida.boipath.model.TopicsModel
+import com.developerobaida.boipath.model.CategoryModel
 import com.developerobaida.boipath.model.WriterModel
 import com.google.gson.Gson
 import retrofit2.Call
@@ -48,22 +50,7 @@ class HomeFragment : Fragment() {
 
         fetchBooks()
         fetchWriters()
-
-
-
-        val topics = listOf(
-            TopicsModel("Seerah"),
-            TopicsModel("Islamic"),
-            TopicsModel("Thriller"),
-            TopicsModel("Seerah"),
-            TopicsModel("Islamic"),
-            TopicsModel("Thriller")
-        )
-        val  adapter3 = TopicsAdapter(topics)
-        binding.topicsRec.adapter =adapter3
-        binding.topicsRec.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
-        binding.topicsRec.hasFixedSize()
-
+        getCategories()
 
         binding.tab.indicator.viewTreeObserver.addOnGlobalLayoutListener {
             if (view.isNotEmpty()) {
@@ -75,7 +62,41 @@ class HomeFragment : Fragment() {
             }
         }
 
+        binding.search.setOnClickListener {
+            val intent = Intent(context,SearchActivity::class.java)
+            startActivity(intent)
+        }
         return binding.root
+    }
+
+    private fun getCategories(){
+        apiService?.getCategories()?.enqueue(object : Callback<List<CategoryModel>>{
+            override fun onResponse(
+                p0: Call<List<CategoryModel>>,
+                p1: Response<List<CategoryModel>>
+            ) {
+                if (p1.isSuccessful){
+                    val category = p1.body()
+                    category?.let {
+                        val  adapter3 = CategoryAdapter(category)
+                        binding.categoryRec.adapter =adapter3
+                        binding.categoryRec.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+                        binding.categoryRec.hasFixedSize()
+                    }
+                }else {
+                    Log.e(
+                        "API_ERROR",
+                        "Category Response not successful: ${p1.code()} ${p1.message()}"
+                    )
+                    Log.e("API_ERROR", "Category Error body: ${p1.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(p0: Call<List<CategoryModel>>, p1: Throwable) {
+                Log.e("API_ERROR", "Failed to fetch Category: ${p1.message}")
+            }
+
+        })
     }
 
     private fun fetchWriters() {
@@ -196,4 +217,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
 }
