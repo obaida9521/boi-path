@@ -1,23 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
+    android:orientation="vertical"
     >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:text="@string/app_name"
+        android:id="@+id/pageTv"
+        android:background="@color/darkish"
+        android:textColor="@color/cream"
+        android:layout_marginTop="@dimen/_10sdp"/>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pageIndicator"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Line Height"
+        android:layout_marginBottom="8dp"/>
 
+    <SeekBar
+        android:id="@+id/lineHeightSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="20"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Letter Spacing"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <SeekBar
+        android:id="@+id/letterSpacingSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="20"
+        android:progress="1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Word Spacing"
+        android:layout_marginBottom="8dp"/>
+
+    <SeekBar
+        android:id="@+id/wordSpacingSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="50"
+        android:progress="5"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/brightnessIndicator"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:thumb="@drawable/sunny_24"
+        android:thumbTint="@color/orange"
+        />
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="@dimen/_18sdp"
         android:layout_marginTop="@dimen/_18sdp"
+        android:scrollbars="none"
         >
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             >
+
+            <Button
+                android:id="@+id/chapters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/secondaryBg"
+                android:textColor="@color/white"
+                android:text="Chapters" />
 
             <Button
                 android:id="@+id/prevPage"
@@ -84,6 +160,30 @@
                 android:layout_height="wrap_content"
                 android:text="J"/>
 
+            <Button
+                android:id="@+id/font"
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/darkish"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:text="F"/>
+
+            <Button
+                android:id="@+id/dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/secondaryBg"
+                android:textColor="@color/white"
+                android:text="Dark" />
+            <Button
+                android:id="@+id/cyan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/secondaryBg"
+                android:textColor="@color/white"
+                android:text="Cyan" />
+
         </LinearLayout>
+
     </HorizontalScrollView>
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

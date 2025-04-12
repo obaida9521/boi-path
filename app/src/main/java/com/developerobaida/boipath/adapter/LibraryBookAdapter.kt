@@ -1,24 +1,30 @@
 package com.developerobaida.boipath.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.developerobaida.boipath.R
+import com.developerobaida.boipath.activity.BookReaderActivity
+import com.developerobaida.boipath.data.local.entity.DownloadedBooks
 import com.developerobaida.boipath.databinding.ItemBook2Binding
-import com.developerobaida.boipath.model.BookModel
 import com.squareup.picasso.Picasso
 
-class LibraryBookAdapter(val list: List<BookModel>) : RecyclerView.Adapter<LibraryBookAdapter.BookView>() {
+class LibraryBookAdapter(val list: List<DownloadedBooks>) : RecyclerView.Adapter<LibraryBookAdapter.BookView>() {
 
     class BookView(private val binding: ItemBook2Binding) :RecyclerView.ViewHolder(binding.root){
-        fun bind(book: BookModel) {
-//            binding.bookName.text = book.bookName
-//            binding.writer.text = book.author
-//
-//            if (book.bookCover!=null){
-//                Picasso.get().load(book.bookCover).placeholder(R.drawable.pic1).into(binding.bookCover)
-//            } else binding.bookCover.setImageResource(R.drawable.pic1)
+        fun bind(book: DownloadedBooks) {
+            binding.bookName.text = book.bookName
+            binding.writer.text = book.author
 
+
+            Picasso.get().load(book.bookCover).error(R.drawable.book).into(binding.bookCover)
+
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context,BookReaderActivity::class.java)
+                intent.putExtra("bookId",book.bookId)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 

@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".fragment.BestSellFragment">
+    tools:context=".fragment.BestSellFragment"
+    >
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -16,6 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,6 +39,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/app_name"
                         android:padding="@dimen/_5sdp"
+                        android:fontFamily="@font/noto_serif"
                         />
                     <ImageView
                         android:layout_width="@dimen/_10sdp"
@@ -43,6 +47,7 @@
                         android:src="@drawable/back_24"
                         android:rotation="-90"
                         android:layout_marginEnd="@dimen/_4sdp"
+                        app:tint="?attr/textColorAlertDialogListItem"
                         />
                 </LinearLayout>
 

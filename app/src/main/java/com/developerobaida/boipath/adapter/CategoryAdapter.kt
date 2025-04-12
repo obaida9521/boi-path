@@ -1,8 +1,10 @@
 package com.developerobaida.boipath.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.developerobaida.boipath.activity.CategoryWiseActivity
 import com.developerobaida.boipath.databinding.ItemTopicsBinding
 import com.developerobaida.boipath.model.CategoryModel
 
@@ -11,6 +13,12 @@ class CategoryAdapter(val list: List<CategoryModel>) : RecyclerView.Adapter<Cate
     class ViewHolder(val binding: ItemTopicsBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(model: CategoryModel){
             binding.topic.text = model.categoryName
+
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context,CategoryWiseActivity::class.java)
+                intent.putExtra("category",model.categoryName)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 

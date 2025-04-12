@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ import retrofit2.Response
 class SelectionBottomSheet(private val listener: (String) -> Unit) : BottomSheetDialogFragment() {
     lateinit var binding: BottomSheetLayoutBinding
     private val apiService = ApiController.instance?.api
+    private var selectedCategory: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,13 +39,21 @@ class SelectionBottomSheet(private val listener: (String) -> Unit) : BottomSheet
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getCategories()
-
+        binding.chipGroup.isSingleSelection = true
 
         binding.chipGroup.setOnCheckedChangeListener { group, checkedId ->
             val selectedChip = group.findViewById<Chip>(checkedId)
             selectedChip?.let {
-                listener(it.text.toString())
+                selectedCategory = it.text.toString()
+            }
+        }
+
+        binding.btnConfirm.setOnClickListener {
+            selectedCategory?.let {
+                listener(it)
                 dismiss()
+            } ?: run {
+                Toast.makeText(requireContext(), "Please select a category", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -71,10 +81,12 @@ class SelectionBottomSheet(private val listener: (String) -> Unit) : BottomSheet
     private fun populateChips(categories: List<CategoryModel>) {
         binding.chipGroup.removeAllViews()
 
+
         for (category in categories) {
             val chip = Chip(requireContext()).apply {
                 text = category.categoryName
                 id = View.generateViewId()
+
 
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                 typeface = ResourcesCompat.getFont(requireContext(), R.font.noto_serif)
@@ -83,6 +95,7 @@ class SelectionBottomSheet(private val listener: (String) -> Unit) : BottomSheet
                 chipStrokeWidth = 2f
 
                 isCheckable = true
+
             }
 
             binding.chipGroup.addView(chip)

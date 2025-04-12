@@ -5,12 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.developerobaida.boipath.data.local.dao.CartDao
+import com.developerobaida.boipath.data.local.dao.DownloadedBooksDao
 import com.developerobaida.boipath.data.local.entity.CartEntity
+import com.developerobaida.boipath.data.local.entity.DownloadedBooks
 
-@Database(entities = [CartEntity::class], version = 1)
+@Database(entities = [CartEntity::class,DownloadedBooks::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun cartDao(): CartDao
+    abstract fun booksDao(): DownloadedBooksDao
 
     companion object {
         @Volatile
@@ -22,7 +25,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "boi_path"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

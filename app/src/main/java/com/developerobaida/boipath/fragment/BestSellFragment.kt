@@ -32,11 +32,13 @@ class BestSellFragment : Fragment() {
         binding = FragmentBestSellBinding.inflate(inflater,container,false)
 
         binding.card.setOnClickListener {
-            val bottomSheet = SelectionBottomSheet { selectedText ->
-                binding.tvCat.text = selectedText
-                fetchBooks(selectedText)
+            binding.card.setOnClickListener {
+                val bottomSheet = SelectionBottomSheet { selectedText ->
+                    binding.tvCat.text = selectedText
+                    fetchBooks(selectedText)
+                }
+                bottomSheet.show(childFragmentManager, "SelectionBottomSheet")
             }
-            bottomSheet.show(childFragmentManager, "SelectionBottomSheet")
         }
 
         fetchBooks("islamic")
@@ -46,6 +48,7 @@ class BestSellFragment : Fragment() {
 
 
     private fun fetchBooks(category: String) {
+        binding.tvCat.text = category
 
         apiService?.getBestSell(category)?.enqueue(object : Callback<List<BookModel>> {
             override fun onResponse(call: Call<List<BookModel>>, response: Response<List<BookModel>>) {
@@ -69,13 +72,5 @@ class BestSellFragment : Fragment() {
                 Log.e("API_ERROR", "Failed to fetch books: ${t.message}")
             }
         })
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 }

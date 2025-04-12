@@ -6,8 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.BookReaderActivity"
-    >
+    tools:context=".activity.TestActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/back_24"
+        app:navigationIconTint="?attr/textColorAlertDialogListItem"
+        app:title="@string/app_name"
+        app:subtitle="@string/app_name"
+        app:menu="@menu/reader_menu"
+        />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -17,21 +27,6 @@
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            />
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:navigationIcon="@drawable/back_24"
-            app:navigationIconTint="?attr/textColorAlertDialogListItem"
-            app:title="@string/app_name"
-            app:subtitle="@string/app_name"
-            app:menu="@menu/reader_menu"
-            android:background="?attr/colorPrimary"
-            android:visibility="gone"
             />
 
         <include layout="@layout/edit_options"
@@ -40,6 +35,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"/>
     </FrameLayout>
-
 
 </LinearLayout>

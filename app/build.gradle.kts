@@ -31,6 +31,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -70,8 +71,13 @@ dependencies {
 
     implementation("androidx.room:room-paging:$room_version")
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+
+
+    implementation( files("libs/sslCommerzSdk.aar"))
+    implementation("com.google.code.gson:gson:2.13.0")
+
 
 }
 //    implementation("com.positiondev.epublib:epublib-core:3.1") {
