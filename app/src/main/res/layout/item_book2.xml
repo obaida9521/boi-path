@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_130sdp"
             android:id="@+id/bookCover"
-            android:src="@drawable/pic1"
+            android:src="@drawable/place_holder_book"
             android:adjustViewBounds="true"
             />
     </androidx.cardview.widget.CardView>
@@ -26,6 +26,7 @@
         android:orientation="vertical"
         android:layout_toRightOf="@+id/cardCover"
         android:layout_marginStart="@dimen/_5sdp"
+        android:layout_centerVertical="true"
         >
         <TextView
             android:id="@+id/bookName"
@@ -55,6 +56,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/_30sdp"
+            android:visibility="gone"
             >
 
             <androidx.cardview.widget.CardView

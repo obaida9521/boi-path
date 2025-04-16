@@ -37,7 +37,7 @@ class BestSellAdapter(val list: List<BookModel>) : RecyclerView.Adapter<BestSell
 
             binding.ranking.text = "#${(position+1)}"
 
-            Picasso.get().load(book.bookCover).placeholder(R.drawable.pic6).error(R.drawable.pic6).into(binding.bookCover)
+            Picasso.get().load(book.bookCover).placeholder(R.drawable.place_holder_book).error(R.drawable.place_holder_book).into(binding.bookCover)
 
 
             showRating(book.id) { rating,ratingCount ->

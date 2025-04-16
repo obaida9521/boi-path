@@ -3,6 +3,7 @@ package com.developerobaida.boipath.fragment
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -172,7 +173,9 @@ class HomeFragment : Fragment() {
                 setText(if (i < parts.size) parts[i] else "")
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f)
                 gravity = Gravity.CENTER
-                setTextColor(if (i == 0) Color.WHITE else ContextCompat.getColor(context, R.color.orange))
+                setTextColor(if (i == 0) Color.WHITE else ContextCompat.getColor(context, R.color.black))
+                val typeface = Typeface.createFromAsset(context.assets, "fonts/noto_serif.ttf")
+                setTypeface(typeface)
             }
 
             textView.setOnClickListener {
@@ -207,7 +210,7 @@ class HomeFragment : Fragment() {
     private fun handleTabChange(textViewList: ArrayList<TextView>, selectedTextView: TextView, indicator: View) {
         val selectedIndex = textViewList.indexOf(selectedTextView)
         if (selectedIndex != -1) {
-            textViewList.forEach { it.setTextColor(ContextCompat.getColor(it.context, R.color.orange)) }
+            textViewList.forEach { it.setTextColor(ContextCompat.getColor(it.context, R.color.black)) }
             selectedTextView.setTextColor(Color.WHITE)
 
             val translationX = selectedTextView.left.toFloat()

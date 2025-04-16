@@ -23,7 +23,7 @@ class AdapterCart(
             binding.writer.text = model.author
             binding.price.text = model.price.toString()
             if (model.bookCover.isNotEmpty()){
-                Picasso.get().load(model.bookCover).placeholder(R.drawable.dwewf).error(R.drawable.dwewf)
+                Picasso.get().load(model.bookCover).placeholder(R.drawable.place_holder_book).error(R.drawable.place_holder_book)
                     .into(binding.bookCover)
             }
 

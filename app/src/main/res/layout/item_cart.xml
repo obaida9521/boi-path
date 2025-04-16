@@ -18,7 +18,7 @@
             android:maxWidth="@dimen/_260sdp"
             android:id="@+id/bookCover"
             android:adjustViewBounds="true"
-            android:src="@drawable/dwewf"
+            android:src="@drawable/place_holder_book"
             />
     </androidx.cardview.widget.CardView>
 

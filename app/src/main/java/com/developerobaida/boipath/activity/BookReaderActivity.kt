@@ -1,17 +1,21 @@
 package com.developerobaida.boipath.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.GestureDetector
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -21,21 +25,22 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.developerobaida.boipath.R
-import com.developerobaida.boipath.adapter.SectionsAdapter
+import com.developerobaida.boipath.data.local.database.AppDatabase
+import com.developerobaida.boipath.data.local.entity.AnnotationEntity
+import com.developerobaida.boipath.data.repository.AnnotationRepository
 import com.developerobaida.boipath.data.repository.DownloadedBookRepository
 import com.developerobaida.boipath.databinding.ActivityBookReaderBinding
+import com.developerobaida.boipath.interfaces.ReaderOptionsListener
+import com.developerobaida.boipath.utils.CustomBottomSheet
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import org.w3c.dom.Element
 import java.io.File
 import java.io.IOException
 import java.util.zip.ZipFile
 import javax.xml.parsers.DocumentBuilderFactory
 
-class BookReaderActivity : AppCompatActivity() {
+class BookReaderActivity : AppCompatActivity(), ReaderOptionsListener {
     lateinit var binding: ActivityBookReaderBinding
     private var currentPageIndex = 0
     private var totalPages = 0
@@ -45,8 +50,19 @@ class BookReaderActivity : AppCompatActivity() {
     private var currentLineHeight = 1.5f
     private var currentLetterSpacing = 1.0f
     private var currentWordSpacing = 5f
+    private var currentTextPaddingLeft = 20
+    private var currentTextPaddingRight = 20
+    private var currentTextPaddingTop = 20
+    private var currentTextPaddingBottom = 50
+
+
     private lateinit var gestureDetector: GestureDetectorCompat
     lateinit var bookRepository: DownloadedBookRepository
+    lateinit var annotationRepository: AnnotationRepository
+
+    private var isToolbarVisible = false
+    private var isIndicatorVisible = false
+    private var currentBookId =0
 
     private lateinit var htmlFiles: List<String>
     private lateinit var sectionTitles: List<String>
@@ -66,6 +82,9 @@ class BookReaderActivity : AppCompatActivity() {
             insets
         }
 
+        val annotationDao = AppDatabase.getDatabase(this).annotationDao()
+        annotationRepository = AnnotationRepository(annotationDao)
+
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -83,106 +102,94 @@ class BookReaderActivity : AppCompatActivity() {
             loadWithOverviewMode = true
             builtInZoomControls = true
             displayZoomControls = false
+
         }
+            binding.webView.overScrollMode = WebView.OVER_SCROLL_NEVER
         WebView.setWebContentsDebuggingEnabled(true)
 
-        getDetails(intent.getIntExtra("bookId",0))
+        currentBookId = intent.getIntExtra("bookId",0)
 
-        binding.options.chapters.setOnClickListener { showSectionsDialog() }
-        binding.options.nextPage.setOnClickListener { goToNextPage() }
-        binding.options.prevPage.setOnClickListener { goToPreviousPage() }
+        getDetails(currentBookId)
 
-        binding.options.increaseTextSize.setOnClickListener {
-            if (currentTextSize <=40) {
-                currentTextSize += 2
-                adjustTextSize(currentTextSize)
-            }
-        }
-
-        binding.options.decreaseTextSize.setOnClickListener {
-            if (currentTextSize >= 16 ) {
-                currentTextSize -= 2
-
-                adjustTextSize(currentTextSize)
-            }
-        }
-        binding.options.dark.setOnClickListener {
-            changeBackgroundColor("#5c3b3b")
-            changeTextColor("#ffe8e8")
-        }
-        binding.options.cyan.setOnClickListener {
-            changeBackgroundColor("#ffeeb5")
-            changeTextColor("#000000")
-        }
-
-        binding.options.alignLeft.setOnClickListener { adjustTextAlignment("left") }
-        binding.options.alignCenter.setOnClickListener { adjustTextAlignment("center") }
-        binding.options.alignRight.setOnClickListener { adjustTextAlignment("right") }
-        binding.options.alignJustify.setOnClickListener { adjustTextAlignment("justify") }
-        binding.options.font.setOnClickListener { changeFont("file:///android_asset/fonts/noto_serif.ttf") }
-        binding.options.pageIndicator.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                scrollToPage(progress)
-                currentPage = progress
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
-
-        val currentBrightness: Int = getScreenBrightness()
-        binding.options.brightnessIndicator.setProgress(currentBrightness)
-        binding.options.brightnessIndicator.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                setScreenBrightness(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
-
-
-        binding.options.lineHeightSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                currentLineHeight = 1.0f + (progress / 20f) // Example: Progress 20 -> line-height 2.0
-                updateLineHeight(currentLineHeight)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        binding.options.letterSpacingSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                currentLetterSpacing = progress.toFloat() // Example: Progress 5 -> letter-spacing 5px
-                updateLetterSpacing(currentLetterSpacing)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-        binding.options.wordSpacingSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                currentWordSpacing = progress.toFloat()
-                updateWordSpacing(currentWordSpacing)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+//        binding.options.chapters.setOnClickListener { showSectionsDialog() }
+//        binding.options.pageIndicator.setOnSeekBarChangeListener(object :
+//            SeekBar.OnSeekBarChangeListener {
+//            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+//                scrollToPage(progress)
+//                currentPage = progress
+//            }
+//
+//            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+//
+//            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+//        })
 
         binding.webView.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
             false
         }
+
+        binding.webView.addJavascriptInterface(TextSelectionInterface(this), "TextHandler")
+
+
+
+        binding.nextPage.setOnClickListener {
+            if (currentPage < totalPages - 1) {
+                currentPage++
+                scrollToPageViaJS(currentPage)
+            } else {
+                Toast.makeText(this, "End of section", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.prevPage.setOnClickListener {
+            if (currentPage > 0) {
+                currentPage--
+                scrollToPageViaJS(currentPage)
+            } else {
+                Toast.makeText(this, "Already at first page", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.pageIndicator.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                currentPage = progress
+                scrollToPageViaJS(currentPage)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
     }
+
+    fun showBottomSheet() {
+        val bottomSheet = CustomBottomSheet(this,totalPages, currentPage)
+        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+    }
+
+    override fun goToNextPages() {
+        goToNextPage()
+    }
+    override fun goToPreviousPages() = goToPreviousPage()
+    override fun adjustTextSizes(size: Int) {
+        currentTextSize = size
+        adjustTextSize(currentTextSize)
+    }
+    override fun adjustTextAlignments(alignment: String) = adjustTextAlignment(alignment)
+    override fun changeBackgroundColors(bgColor: String, textColor: String) {
+        changeBackgroundColor(bgColor)
+        changeTextColor(textColor)
+    }
+    override fun adjustBrightnesses(brightness: Int) = setScreenBrightness(brightness)
+    override fun updateLineHeights(lineHeight: Float) = updateLineHeight(lineHeight)
+    override fun updateLetterSpacings(letterSpacing: Float) = updateLetterSpacing(letterSpacing)
+    override fun updateWordSpacings(wordSpacing: Float) = updateWordSpacing(wordSpacing)
+    override fun changeFonts(fontPath: String) = changeFont(fontPath)
+    override fun scrollToPages(page: Int) {
+        currentPage = page
+        scrollToPage(page)
+    }
+
 
     private fun getDetails(id: Int){
         lifecycleScope.launch {
@@ -205,6 +212,16 @@ class BookReaderActivity : AppCompatActivity() {
         private val SWIPE_THRESHOLD = 100
         private val SWIPE_VELOCITY_THRESHOLD = 100
 
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            toggleToolbar()
+            toggleIndicator()
+            return true
+        }
+
+        override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+            return super.onDoubleTapEvent(e)
+        }
+
         override fun onFling(
             e1: MotionEvent?,
             e2: MotionEvent,
@@ -216,11 +233,35 @@ class BookReaderActivity : AppCompatActivity() {
             if (Math.abs(diffX) > Math.abs(diffY)) {
                 if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffX > 0) {
-                        // Swipe right (previous page)
-                        goToPreviousPage()
+
+                        if (currentPage > 0) {
+                            currentPage--
+                            scrollToPageViaJS(currentPage)
+                        } else {
+                            if (currentPageIndex > 0) {
+                                currentPageIndex--
+                                loadCurrentPage()
+                            } else {
+                                Toast.makeText(this@BookReaderActivity, "Already at first page", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+
+                        //goToPreviousPage()
                     } else {
-                        // Swipe left (next page)
-                        goToNextPage()
+
+                        if (currentPage < totalPages - 1) {
+                            currentPage++
+                            scrollToPageViaJS(currentPage)
+                        } else {
+                            if (currentPageIndex < htmlFiles.size - 1) {
+                                currentPageIndex++
+                                loadCurrentPage()
+                            } else {
+                                Toast.makeText(this@BookReaderActivity, "End of book", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        //goToNextPage()
                     }
                     return true
                 }
@@ -229,10 +270,11 @@ class BookReaderActivity : AppCompatActivity() {
         }
     }
 
+
     private fun calculatePagination() {
         val js = """
         (function() {
-            const totalWidth = document.body.scrollWidth;
+            const totalWidth = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
             const viewWidth = window.innerWidth;
             const totalPages = Math.ceil(totalWidth / viewWidth);
             window.__pagination = {
@@ -245,11 +287,11 @@ class BookReaderActivity : AppCompatActivity() {
 
         binding.webView.evaluateJavascript(js) { result ->
             try {
-                val clean = result.replace("\"", "").trim()
-                totalPages = clean.toInt()
+                totalPages = result.toInt()
                 currentPage = 0
-                binding.options.pageIndicator.max = totalPages - 1
-                binding.options.pageTv.text = "1 / $totalPages (${sectionTitles.getOrNull(currentPageIndex) ?: ""})"
+                Toast.makeText(this,"$result ",Toast.LENGTH_SHORT).show()
+                // binding.options.pageIndicator.max = totalPages - 1
+                //binding.options.pageTv.text = "1 / $totalPages (${sectionTitles.getOrNull(currentPageIndex) ?: ""})"
             } catch (e: Exception) {
                 Log.e("EpubReader", "Pagination parse error", e)
             }
@@ -258,15 +300,32 @@ class BookReaderActivity : AppCompatActivity() {
 
     private fun scrollToPage(page: Int) {
         val js = """
+    (function() {
+        const pageWidth = window.innerWidth;
+        window.scrollTo({
+            left: pageWidth * $page,
+            behavior: 'smooth'
+        });
+    })();
+    """.trimIndent()
+
+        binding.webView.evaluateJavascript(js, null)
+        currentPage = page
+    }
+
+    fun scrollToPageViaJS(page: Int) {
+        currentPage = page
+        val js = """
         (function() {
             if (window.__pagination) {
-                let x = window.__pagination.pageWidth * $page;
-                window.scrollTo({ left: x, behavior: 'smooth' });
+                const pageWidth = window.__pagination.pageWidth;
+                const scrollX = pageWidth * $page;
+                document.documentElement.scrollLeft = scrollX;
+                document.body.scrollLeft = scrollX;
             }
         })();
     """.trimIndent()
 
-        binding.options.pageTv.text = "${page + 1} / $totalPages"
         binding.webView.evaluateJavascript(js, null)
     }
 
@@ -330,8 +389,32 @@ class BookReaderActivity : AppCompatActivity() {
                 binding.webView.webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
-                        calculatePagination()
+
+                        val js = """
+        (function() {
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    const totalWidth = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
+                    const viewWidth = window.innerWidth;
+                    const totalPages = Math.ceil(totalWidth / viewWidth);
+                    window.__pagination = {
+                        totalPages: totalPages,
+                        pageWidth: viewWidth
+                    };
+                    if (typeof TextHandler !== "undefined" && TextHandler.onPaginationReady) {
+                        TextHandler.onPaginationReady(totalPages.toString());
+                    }
+                }, 200); // ~1 frame delay
+            });
+        })();
+    """.trimIndent()
+
+                        binding.webView.evaluateJavascript(js, null)
+
                         disableScrolling()
+
+                        restoreAnnotationsForCurrentPage()
+                        injectTextSelectionListener()
                     }
                 }
                 loadHtmlIntoWebView(binding.webView, htmlFile)
@@ -424,8 +507,6 @@ class BookReaderActivity : AppCompatActivity() {
         return Pair(htmlFiles, sectionTitles)
         //return htmlFiles
     }
-
-
     private fun loadHtmlIntoWebView(webView: WebView, htmlFile: File) {
         try {
             val htmlContent = htmlFile.readText()
@@ -445,38 +526,70 @@ class BookReaderActivity : AppCompatActivity() {
                 padding: 0;
                 height: 100vh;
                 width: 100vw;
-               
                 
-                overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-x: contain;
-    scroll-behavior: smooth;
+                scroll-behavior: smooth;
+        -webkit-overflow-scrolling: hidden;
+         scroll-snap-type: x mandatory;
+         touch-action: none;
+               
             }
 
             body {
+            overflow-x: scroll;
+            overflow-y: hidden;
                 -webkit-column-width: 100vw;
                 -webkit-column-gap: 0;
                 column-width: 100vw;
-                column-gap: 20px;
+                column-gap: 0;
+                column-padding: 0;
                 height: 100vh;
                 font-size: ${currentTextSize}px;
                 line-height: ${currentLineHeight};
                 font-family: 'CustomFont', sans-serif;
                 
-                scroll-snap-type: x mandatory;
-                scroll-behavior: smooth;
-                -webkit-overflow-scrolling: touch;
+                padding-top: ${currentTextPaddingTop}px;
+                padding-bottom: ${currentTextPaddingBottom}px;
             }
             
+            
             .page {
-                scroll-snap-align: start;
+              display: inline-block;
+              vertical-align: top;
+              width: 100vw;
+              height: 100vh;
+              box-sizing: border-box;
+              padding: 20px;
             }
+            
+            
+            
+            * {
+              user-select: none;
+              -webkit-user-select: none;
+            }
+            
+            ::selection {
+               background-color: #8b1bf5; /* Highlight color */
+               color: white;              /* Text color when selected */
+            }
+    
 
             p, div, span, h1, h2, h3, h4, h5, h6 {
                 font-size: ${currentTextSize}px;
                 line-height: ${currentLineHeight};
                 font-family: 'CustomFont', sans-serif;
+                
+                user-select: text;
+                -webkit-user-select: text;
+                
+                 
             }
+            
+             p, div, h1, h2, h3, h4, h5, h6 {
+                 padding-left: ${currentTextPaddingLeft}px;
+                 padding-right: ${currentTextPaddingRight}px;
+             }
+            
 
             img, table {
                 max-width: 100%;
@@ -491,9 +604,10 @@ class BookReaderActivity : AppCompatActivity() {
                 document.body.style.fontSize = '${currentTextSize}px';
                 document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6').forEach(function(element) {
                     element.style.fontSize = '${currentTextSize}px';
-                    element.style.fontFamily = 'CustomFont, sans-serif';
+                    //element.style.fontFamily = 'CustomFont, sans-serif';
                 });
             });
+            
         </script>
         """.trimIndent()
 
@@ -502,9 +616,274 @@ class BookReaderActivity : AppCompatActivity() {
 
             val baseUrl = "file://${htmlFile.parent}/"
             webView.loadDataWithBaseURL(baseUrl, modifiedHtmlContent, "text/html", "UTF-8", null)
+
         } catch (e: IOException) {
             Log.e("EpubReader", "Error reading HTML file", e)
         }
+    }
+
+
+
+    private fun disableScrolling() {
+        val js = """
+        (function() {
+           
+           document.body.style.overflowX = 'scroll';
+            document.documentElement.style.overflowX = 'scroll';
+            
+            document.body.style.overflowY = 'hidden';
+            document.documentElement.style.overflowY = 'hidden';
+          
+        })();
+    """.trimIndent()
+        binding.webView.evaluateJavascript(js, null)
+    }
+
+    private fun goToNextPage() {
+        if (currentPage < totalPages - 1) {
+            currentPage++
+            scrollToPage(currentPage)
+            //binding.options.pageIndicator.progress = currentPage
+        } else {
+            if (currentPageIndex < htmlFiles.size - 1) {
+                currentPageIndex++
+                loadCurrentPage()
+            } else {
+                Toast.makeText(this, "End of book", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    private fun goToPreviousPage() {
+        if (currentPage > 0) {
+            currentPage--
+            scrollToPage(currentPage)
+            //binding.options.pageIndicator.progress = currentPage
+        } else {
+            if (currentPageIndex > 0) {
+                currentPageIndex--
+                loadCurrentPage()
+            } else {
+                Toast.makeText(this, "Already at first page", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    class TextSelectionInterface(private val context: Context) {
+
+        @JavascriptInterface
+        fun onTextSelected(data: String) {
+            (context as? Activity)?.runOnUiThread {
+                val parts = data.split("||")
+                if (parts.size == 2) {
+                    val text = parts[0]
+                    val coords = parts[1].split(",").map { it.toFloat() }
+                    if (coords.size == 4) {
+                        val x = coords[0]
+                        val y = coords[1]
+                        val width = coords[2]
+                        val height = coords[3]
+                        (context as BookReaderActivity).showTextActionPopup(text, x, y, width, height)
+                    }
+                }
+            }
+        }
+
+
+        @JavascriptInterface
+        fun onPaginationReady(pages: String) {
+            (context as? Activity)?.runOnUiThread {
+                try {
+                    val pageCount = pages.toInt()
+                    (context as? BookReaderActivity)?.onPaginationCalculated(pageCount)
+                } catch (e: Exception) {
+                    Log.e("EpubReader", "Pagination parse error", e)
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun goToPage(pageIndex: Int) {
+            (context as? Activity)?.runOnUiThread {
+                (context as? BookReaderActivity)?.scrollToPageViaJS(pageIndex)
+            }
+        }
+    }
+
+    fun onPaginationCalculated(pageCount: Int) {
+        totalPages = pageCount
+        currentPage = 0
+        Log.d("Pagination", "Total pages = $totalPages")
+        Toast.makeText(this, "Total pages: $totalPages", Toast.LENGTH_SHORT).show()
+
+         binding.pageIndicator.max = totalPages - 1
+         binding.pageTv.text = "1 / $totalPages"
+    }
+
+    fun showTextActionPopup(
+        selectedText: String,
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float
+    ) {
+        val overlay = findViewById<View>(R.id.overlayTextActions)
+        val etNote = findViewById<EditText>(R.id.etNote)
+        var selectedColor = "#FFFF00"
+
+        etNote.visibility = View.GONE
+        overlay.visibility = View.VISIBLE
+
+        // Convert WebView coordinates to screen coordinates
+        val location = IntArray(2)
+        binding.webView.getLocationOnScreen(location)
+        val webViewX = location[0]
+        val webViewY = location[1]
+
+        val overlayX = webViewX + x
+        val overlayY = webViewY + y - overlay.height - 20
+
+        overlay.translationX = overlayX
+        overlay.translationY = overlayY
+
+        // Action button listeners
+        findViewById<Button>(R.id.btnBookmark).setOnClickListener {
+            saveBookmark(selectedText)
+            overlay.visibility = View.GONE
+        }
+
+        findViewById<Button>(R.id.btnHighlight).setOnClickListener {
+            saveHighlight(selectedText, selectedColor)
+            overlay.visibility = View.GONE
+        }
+
+        findViewById<Button>(R.id.btnNote).setOnClickListener {
+            if (etNote.visibility == View.VISIBLE) {
+                saveNote(selectedText, etNote.text.toString(), selectedColor)
+                overlay.visibility = View.GONE
+            } else {
+                etNote.visibility = View.VISIBLE
+            }
+        }
+
+        val colorPicker = findViewById<LinearLayout>(R.id.colorPicker)
+        for (i in 0 until colorPicker.childCount) {
+            val colorBtn = colorPicker.getChildAt(i)
+            colorBtn.setOnClickListener {
+                selectedColor = colorBtn.tag.toString()
+            }
+        }
+    }
+
+
+    fun saveBookmark(text: String) {
+        lifecycleScope.launch {
+            annotationRepository.insert(
+                AnnotationEntity(
+                    bookId = currentBookId, // you already use this
+                    fileName = htmlFiles.getOrNull(currentPageIndex) ?: "",
+                    pageIndex = currentPage,
+                    type = "bookmark",
+                    selectedText = text
+                )
+            )
+            Toast.makeText(this@BookReaderActivity, "Bookmarked!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun saveHighlight(text: String, color: String) {
+        lifecycleScope.launch {
+            annotationRepository.insert(
+                AnnotationEntity(
+                    bookId = currentBookId,
+                    fileName = htmlFiles.getOrNull(currentPageIndex) ?: "",
+                    pageIndex = currentPage,
+                    type = "highlight",
+                    selectedText = text,
+                    highlightColor = color
+                )
+            )
+            restoreAnnotationsForCurrentPage()
+        }
+    }
+
+    fun saveNote(text: String, note: String, color: String) {
+        lifecycleScope.launch {
+            annotationRepository.insert(
+                AnnotationEntity(
+                    bookId = currentBookId,
+                    fileName = htmlFiles.getOrNull(currentPageIndex) ?: "",
+                    pageIndex = currentPage,
+                    type = "note",
+                    selectedText = text,
+                    noteText = note,
+                    highlightColor = color
+                )
+            )
+        }
+    }
+
+    private fun injectTextSelectionListener() {
+        val js = """
+        (function() {
+            document.addEventListener("selectionchange", function() {
+                var selection = window.getSelection();
+                var selectedText = selection.toString().trim();
+                if (selectedText.length > 0) {
+                    var range = selection.getRangeAt(0);
+                    var rect = range.getBoundingClientRect();
+                    if (typeof TextHandler !== "undefined" && TextHandler.onTextSelected) {
+                        TextHandler.onTextSelected(selectedText + "||" + rect.left + "," + rect.top + "," + rect.width + "," + rect.height);
+                    }
+                }
+            });
+        })();
+    """.trimIndent()
+
+        binding.webView.evaluateJavascript(js, null)
+    }
+
+
+    private fun restoreAnnotationsForCurrentPage() {
+        lifecycleScope.launch {
+            val fileName = htmlFiles.getOrNull(currentPageIndex) ?: return@launch
+            val annotations = annotationRepository.getAnnotations(currentBookId)
+                .filter { it.fileName == fileName && it.pageIndex == currentPage }
+
+            annotations.forEach {
+                injectHighlightSpan(it.selectedText, it.highlightColor ?: "#FFFF00")
+            }
+        }
+    }
+
+    fun injectHighlightSpan(selectedText: String, color: String) {
+        val js = """
+        (function() {
+            var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            while(walker.nextNode()) {
+                var node = walker.currentNode;
+                if(node.nodeValue.includes("$selectedText")) {
+                    var span = document.createElement("span");
+                    span.style.backgroundColor = "$color";
+                    span.className = "highlighted-text";
+                    var text = node.nodeValue;
+                    var index = text.indexOf("$selectedText");
+                    if(index !== -1) {
+                        var before = document.createTextNode(text.slice(0, index));
+                        var middle = document.createTextNode("$selectedText");
+                        var after = document.createTextNode(text.slice(index + "$selectedText".length));
+                        span.appendChild(middle);
+                        var parent = node.parentNode;
+                        parent.replaceChild(after, node);
+                        parent.insertBefore(span, after);
+                        parent.insertBefore(before, span);
+                        break;
+                    }
+                }
+            }
+        })();
+    """.trimIndent()
+
+        binding.webView.evaluateJavascript(js, null)
     }
 
     private fun changeBackgroundColor(color: String) {
@@ -531,8 +910,13 @@ class BookReaderActivity : AppCompatActivity() {
     private fun changeFont(fontPath: String) {
         val js = """
         (function() {
+            var oldStyle = document.getElementById('customFontStyle');
+            if (oldStyle) {
+                oldStyle.parentNode.removeChild(oldStyle);
+            }
             var style = document.createElement('style');
             style.type = 'text/css';
+            style.id = 'customFontStyle';
             var css = `
                 @font-face {
                     font-family: 'CustomFont';
@@ -548,6 +932,7 @@ class BookReaderActivity : AppCompatActivity() {
     """.trimIndent()
 
         binding.webView.evaluateJavascript(js, null)
+        calculatePagination()
     }
     private fun adjustTextAlignment(alignment: String) {
         val js = """
@@ -568,65 +953,14 @@ class BookReaderActivity : AppCompatActivity() {
         binding.webView.evaluateJavascript(js, null)
         calculatePagination()
     }
-    private fun goToNextPage() {
-        if (currentPage < totalPages - 1) {
-            currentPage++
-            scrollToPage(currentPage)
-            binding.options.pageIndicator.progress = currentPage
-        } else {
-            if (currentPageIndex < htmlFiles.size - 1) {
-                currentPageIndex++
-                loadCurrentPage()
-            } else {
-                Toast.makeText(this, "End of book", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    private fun goToPreviousPage() {
-        if (currentPage > 0) {
-            currentPage--
-            scrollToPage(currentPage)
-            binding.options.pageIndicator.progress = currentPage
-        } else {
-            if (currentPageIndex > 0) {
-                currentPageIndex--
-                loadCurrentPage()
-            } else {
-                Toast.makeText(this, "Already at first page", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    private fun disableScrolling() {
-        /*
-         document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';*/
-        val js = """
-        (function() {
-           
-           
-           
-           document.body.style.overflowX = 'auto';
-            document.body.style.overflowY = 'hidden';
-            document.documentElement.style.overflowX = 'auto';
-            document.documentElement.style.overflowY = 'hidden';
-        })();
-    """.trimIndent()
-        binding.webView.evaluateJavascript(js, null)
-    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId== R.id.brightness){
-            Toast.makeText(this,"clicked",Toast.LENGTH_SHORT).show()
+            showBottomSheet()
         }
         return true
     }
-    private fun getScreenBrightness(): Int {
-        try {
-            return Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-        } catch (e: Settings.SettingNotFoundException) {
-            e.printStackTrace()
-            return 125
-        }
-    }
+
     private fun setScreenBrightness(brightness: Int) {
         val layoutParams = window.attributes
         layoutParams.screenBrightness = brightness / 255.0f
@@ -690,76 +1024,34 @@ class BookReaderActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
+    private fun toggleToolbar() {
+        if (isToolbarVisible) {
+            binding.toolbar.animate()
+                .alpha(0f)
+                .withEndAction {
+                    binding.toolbar.visibility = View.GONE
+                }.start()
+        } else {
+            binding.toolbar.alpha = 0f
+            binding.toolbar.visibility = View.VISIBLE
+            binding.toolbar.animate().alpha(1f).start()
+        }
+        isToolbarVisible = !isToolbarVisible
+    }
+
+    private fun toggleIndicator() {
+        if (isIndicatorVisible) {
+            binding.indicatorLay.animate()
+                .alpha(0f)
+                .withEndAction {
+                    binding.indicatorLay.visibility = View.GONE
+                }.start()
+        } else {
+            binding.indicatorLay.alpha = 0f
+            binding.indicatorLay.visibility = View.VISIBLE
+            binding.indicatorLay.animate().alpha(1f).start()
+        }
+        isIndicatorVisible = !isIndicatorVisible
+    }
 }
-
-/*private fun calculatePagination() {
-        val js = """
-        (function() {
-            let contentHeight = document.body.scrollHeight;
-            let viewportHeight = window.innerHeight;
-            let totalPages = Math.ceil(contentHeight / viewportHeight);
-            return totalPages;
-        })();
-    """.trimIndent()
-
-        binding.webView.evaluateJavascript(js) { result ->
-            try {
-                totalPages = result.toInt()
-                currentPage = 0
-                binding.options.pageIndicator.max = (totalPages-1)
-                binding.options.pageTv.text = "1 / $totalPages ($sectionTitles)"
-                Log.d("EpubReader", "Total Pages: $totalPages")
-            } catch (e: Exception) {
-                Log.e("EpubReader", "Error parsing page count", e)
-            }
-        }
-    }*/
-
-/*private fun loadHtmlIntoWebView(webView: WebView, htmlFile: File, assetsDir: File) {
-        try {
-            val htmlContent = htmlFile.readText()
-
-            val fixedWidthCSS = """
-        <style>
-        @font-face {
-                font-family: 'CustomFont';
-                src: url('file:///android_asset/fonts/');
-            }
-
-            body {
-                width: 100vw;
-                overflow-x: hidden;
-                margin: 0;
-                padding: 0px;
-                font-size: ${currentTextSize}px;
-                font-family: 'CustomFont', sans-serif;
-            }
-            img, svg, table, div {
-                max-width: 100%;
-                height: auto;
-            }
-            p, div, span, h1, h2, h3, h4, h5, h6 {
-                text-align: left;
-                font-size: ${currentTextSize}px;
-                font-family: 'CustomFont', sans-serif;
-            }
-        </style>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                document.body.style.fontSize = '${currentTextSize}px';
-                document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6').forEach(function(element) {
-                    element.style.fontSize = '${currentTextSize}px';
-                    element.style.fontFamily = 'CustomFont, sans-serif';
-                });
-            });
-        </script>
-        """.trimIndent()
-
-            val modifiedHtmlContent = htmlContent.replace("</head>", "$fixedWidthCSS</head>")
-
-            val baseUrl = "file://${htmlFile.parent}/"
-            webView.loadDataWithBaseURL(baseUrl, modifiedHtmlContent, "text/html", "UTF-8", null)
-        } catch (e: IOException) {
-            Log.e("EpubReader", "Error reading HTML file", e)
-        }
-    }*/

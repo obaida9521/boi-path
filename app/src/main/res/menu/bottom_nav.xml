@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/home"
         android:title="হোম"
-        android:icon="@drawable/home_icon"
+        android:icon="@drawable/home_24"
         />
 
     <item android:id="@+id/bestSell"
         android:title="বেস্টসেল"
-        android:icon="@drawable/achieve"
+        android:icon="@drawable/best_sell_24"
         />
 
 <!--    <item android:id="@+id/cart"-->
@@ -17,12 +17,12 @@
 
     <item android:id="@+id/library"
         android:title="পাঠাগার"
-        android:icon="@drawable/book"
+        android:icon="@drawable/library"
         />
 
-    <item android:id="@+id/settings"
-        android:title="Settings"
-        android:icon="@drawable/settings"
+    <item android:id="@+id/review"
+        android:title="Review"
+        android:icon="@drawable/review"
         />
 
 </menu>

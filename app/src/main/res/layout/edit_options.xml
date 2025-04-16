@@ -2,65 +2,227 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    >
-    <TextView
+    android:background="@drawable/popup_background">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_5sdp"
+        >
+        <androidx.cardview.widget.CardView
+            android:id="@+id/increaseText"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_margin="@dimen/_5sdp"
+            app:cardCornerRadius="@dimen/_8sdp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:backgroundTint="@color/backgroundGrey"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ts_plus"
+                android:padding="@dimen/_5sdp"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/decreaseText"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_margin="@dimen/_5sdp"
+            app:cardCornerRadius="@dimen/_8sdp"
+            android:clickable="true"
+            android:backgroundTint="@color/backgroundGrey"
+            android:foreground="?attr/selectableItemBackground"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ts_minus"
+                android:padding="@dimen/_5sdp"/>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+    <RadioGroup
+        android:id="@+id/alignGroup"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_gravity="center"
-        android:text="@string/app_name"
-        android:id="@+id/pageTv"
-        android:background="@color/darkish"
-        android:textColor="@color/cream"
-        android:layout_marginTop="@dimen/_10sdp"/>
-    <SeekBar
+        >
+        <RadioButton
+            android:id="@+id/left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/align_left_24"
+            android:gravity="center"
+            android:background="@drawable/radio_button_selector"
+            android:text="Left"
+            android:padding="@dimen/_5sdp"
+            android:fontFamily="@font/noto_serif"
+            />
+        <RadioButton
+            android:id="@+id/center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/align_center_24"
+            android:gravity="center"
+            android:background="@drawable/radio_button_selector"
+            android:text="Center"
+            android:fontFamily="@font/noto_serif"
+            android:padding="@dimen/_5sdp"
+            />
+        <RadioButton
+            android:id="@+id/right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/align_right_24"
+            android:gravity="center"
+            android:background="@drawable/radio_button_selector"
+            android:text="Right"
+            android:padding="@dimen/_5sdp"
+            android:fontFamily="@font/noto_serif"
+            />
+        <RadioButton
+            android:id="@+id/justify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/align_justify_24"
+            android:gravity="center"
+            android:background="@drawable/radio_button_selector"
+            android:text="Justify"
+            android:fontFamily="@font/noto_serif"
+            android:padding="@dimen/_5sdp"
+            />
+    </RadioGroup>
+
+
+
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/pageIndicator"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        />
+        android:scrollbars="none"
+        >
+        <RadioGroup
+            android:id="@+id/fontGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Line Height"
-        android:layout_marginBottom="8dp"/>
+        </RadioGroup>
+    </HorizontalScrollView>
 
-    <SeekBar
-        android:id="@+id/lineHeightSeekBar"
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="20"/>
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginEnd="@dimen/_7sdp"
+        app:cardCornerRadius="@dimen/_4sdp"
+        android:backgroundTint="@color/backgroundGrey"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp"
+            android:gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Line Height"
+                android:fontFamily="@font/noto_serif"
+                android:layout_marginBottom="8dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Letter Spacing"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+            <SeekBar
+                android:id="@+id/lineHeightSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="20"/>
+        </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/letterSpacingSeekBar"
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="20"
-        android:progress="1" />
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginEnd="@dimen/_7sdp"
+        app:cardCornerRadius="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:backgroundTint="@color/backgroundGrey"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Word Spacing"
-        android:layout_marginBottom="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Letter Spacing"
+                android:fontFamily="@font/noto_serif"
+                android:layout_marginBottom="8dp"/>
 
-    <SeekBar
-        android:id="@+id/wordSpacingSeekBar"
+            <SeekBar
+                android:id="@+id/letterSpacingSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="20"
+                android:progress="1" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="50"
-        android:progress="5"/>
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginEnd="@dimen/_7sdp"
+        app:cardCornerRadius="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:backgroundTint="@color/backgroundGrey"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Word Spacing"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/wordSpacingSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="50"
+                android:progress="5"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
 
     <SeekBar
         android:layout_width="match_parent"
@@ -95,78 +257,6 @@
                 android:textColor="@color/white"
                 android:text="Chapters" />
 
-            <Button
-                android:id="@+id/prevPage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/secondaryBg"
-                android:textColor="@color/white"
-                android:text="Previous" />
-
-            <Button
-                android:id="@+id/nextPage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/cream"
-                android:textColor="@color/darkish"
-                android:text="Next" />
-
-
-            <Button
-                android:id="@+id/increaseTextSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:text="A+"/>
-
-            <Button
-                android:id="@+id/decreaseTextSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:text="A-"/>
-
-            <Button
-                android:id="@+id/alignLeft"
-                android:layout_width="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"
-                android:text="L"/>
-
-            <Button
-                android:id="@+id/alignCenter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:text="C"/>
-
-            <Button
-                android:id="@+id/alignRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:text="R"/>
-
-            <Button
-                android:id="@+id/alignJustify"
-                android:layout_width="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"
-                android:text="J"/>
-
-            <Button
-                android:id="@+id/font"
-                android:layout_width="wrap_content"
-                android:backgroundTint="@color/darkish"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"
-                android:text="F"/>
 
             <Button
                 android:id="@+id/dark"

@@ -214,7 +214,14 @@ class BookDetailsActivity : AppCompatActivity() {
             }
         } else {
             isPurchased()
-            purchases.forEach{
+            binding.buy.text = "ডাউনলোড"
+            binding.buy.setOnClickListener {
+                if (!file.exists()) {
+                    downloadEbook(fileUrl)
+                } else{
+                }
+            }
+            /*purchases.forEach{
                 if (it.bookId == bookId){
                     binding.buy.text = "ডাউনলোড"
                     binding.buy.setOnClickListener {
@@ -239,7 +246,7 @@ class BookDetailsActivity : AppCompatActivity() {
                         }
                     }
                 }
-            }
+            }*/
 
 
         }
@@ -256,7 +263,8 @@ class BookDetailsActivity : AppCompatActivity() {
                         binding.aboutBook.text = book[0].description
                         binding.page.text = langFormat.format(book[0].pages)
                         binding.price.text = langFormat.format(book[0].price)+"৳"
-                        Picasso.get().load(book[0].bookCover).placeholder(R.drawable.dwewf).error(R.drawable.dwewf).into(binding.bookCover)
+                        Picasso.get().load(BASE_URL+"storage/"+book[0].bookCover).placeholder(R.drawable.dwewf).error(R.drawable.dwewf).into(binding.bookCover)
+
 
                         fileUrl = book[0].epubFile
                         bookId = book[0].id
@@ -374,7 +382,7 @@ class BookDetailsActivity : AppCompatActivity() {
                         binding.writerName2.text = writer.name
                         binding.writerFollower.text = langFormat.format(writer.followers)+" অনুসরণ কারী"
                         if (writer.image !=null){
-                            Picasso.get().load(BASE_URL+writer.image).into(binding.writerImg)
+                            Picasso.get().load(BASE_URL+"storage/"+writer.image).into(binding.writerImg)
                         }else binding.writerImg.setImageResource(R.drawable.dwewf)
                     }
                 }else{

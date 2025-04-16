@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/darkish"
+        android:textColor="@color/white"
         android:text="Confirm"
         app:cornerRadius="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_10sdp"/>

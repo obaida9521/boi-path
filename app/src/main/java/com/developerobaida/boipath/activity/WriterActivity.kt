@@ -13,6 +13,7 @@ import com.developerobaida.boipath.adapter.BookAdapter
 import com.developerobaida.boipath.api.ApiController
 import com.developerobaida.boipath.databinding.ActivityWriterBinding
 import com.developerobaida.boipath.model.BookModel
+import com.developerobaida.boipath.model.Constant.BASE_URL
 import com.developerobaida.boipath.model.WriterModel
 import com.squareup.picasso.Picasso
 import retrofit2.Call
@@ -29,7 +30,13 @@ class WriterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWriterBinding.inflate(layoutInflater)
+        enableEdgeToEdge()
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         val id = intent.getIntExtra("author_id",0);
         fetchBook(id)
@@ -44,12 +51,12 @@ class WriterActivity : AppCompatActivity() {
                     val writer = response.body()
                     writer?.let {
                         binding.writerName.text = writer.name
-                        binding.followers.text = langFormat.format(writer.followers)+" অনুসারী"
+                        binding.followers.text = langFormat.format(writer.followers)+" ফলোয়ার"
                         binding.aboutAuthor.text =writer.about
                         binding.bookCount.text = langFormat.format(writer.totalBooks)+" টি বই"
 
                         if (writer.image !=null){
-                            Picasso.get().load(writer.image).into(binding.writerImg)
+                            Picasso.get().load(BASE_URL+"storage/"+writer.image).error(R.drawable.user).into(binding.writerImg)
                         }else binding.writerImg.setImageResource(R.drawable.dwewf)
                     }
                 }else{

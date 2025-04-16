@@ -41,7 +41,7 @@
                         android:layout_width="@dimen/_80sdp"
                         android:layout_height="@dimen/_80sdp"
                         android:id="@+id/writerImg"
-                        android:src="@drawable/dwewf"
+                        android:src="@drawable/user"
                         app:shapeAppearanceOverlay="@style/CircularImg"
                         android:scaleType="centerCrop"
                         android:layout_margin="@dimen/_3sdp"
@@ -65,6 +65,7 @@
                         android:textStyle="bold"
                         android:text="লেখকের নাম"
                         android:textColor="@color/white"
+                        android:fontFamily="@font/noto_serif"
                         />
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -76,6 +77,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="০ টি বই"
+                            android:fontFamily="@font/noto_serif"
                             android:textColor="@color/white"
                             android:layout_marginEnd="@dimen/_10sdp"
                             />
@@ -84,6 +86,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="২০ ফলোয়ার"
+                            android:fontFamily="@font/noto_serif"
                             android:textColor="@color/white"
                             />
                     </LinearLayout>
@@ -96,6 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Follow"
+                android:fontFamily="@font/noto_serif"
                 android:backgroundTint="#3587F2"
                 android:textColor="@color/white"
                 android:layout_marginTop="-25dp"
@@ -114,6 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="লেখক সম্পর্কে"
+                    android:fontFamily="@font/noto_serif"
                     android:textStyle="bold"
                     android:textSize="@dimen/_15ssp"
                     />
@@ -123,6 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_13ssp"
+                    android:fontFamily="@font/noto_serif"
                     />
 
                 <TextView
@@ -130,6 +136,7 @@
                     android:layout_height="wrap_content"
                     android:text="লেখকের বই"
                     android:textStyle="bold"
+                    android:fontFamily="@font/noto_serif"
                     android:textSize="@dimen/_15ssp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_5sdp"

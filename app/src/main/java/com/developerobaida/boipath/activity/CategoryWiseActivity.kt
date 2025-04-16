@@ -6,10 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developerobaida.boipath.R
-import com.developerobaida.boipath.adapter.BookAdapter
+import com.developerobaida.boipath.adapter.AdapterCategoryWise
 import com.developerobaida.boipath.api.ApiController
 import com.developerobaida.boipath.databinding.ActivityCategoryWiseBinding
 import com.developerobaida.boipath.model.BookModel
@@ -32,6 +31,9 @@ class CategoryWiseActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
         val category = intent.getStringExtra("category")
         category?.let { fetchBooks(it) }
 
@@ -46,9 +48,9 @@ class CategoryWiseActivity : AppCompatActivity() {
                     books?.let {
                         Log.d("API_RESPONSE", "Books: ${Gson().toJson(books)}")
 
-                        val adapter = BookAdapter(books)
+                        val adapter = AdapterCategoryWise(books)
                         binding.recCategoryWise.adapter =adapter
-                        binding.recCategoryWise.layoutManager = GridLayoutManager(this@CategoryWiseActivity,3)
+                        binding.recCategoryWise.layoutManager = LinearLayoutManager(this@CategoryWiseActivity)
                         binding.recCategoryWise.hasFixedSize()
                     }
                 } else {

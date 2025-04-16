@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_toRightOf="@+id/cardCover"
-        android:layout_toLeftOf="@+id/cardSerial"
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         >
@@ -111,21 +110,5 @@
 
 
     </LinearLayout>
-
-    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
-        android:id="@+id/cardSerial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        >
-        <TextView
-            android:id="@+id/ranking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="#1"
-            android:padding="@dimen/_5sdp"
-            android:textStyle="bold"
-            />
-    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
 </RelativeLayout>

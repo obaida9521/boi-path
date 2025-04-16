@@ -5,6 +5,6 @@
     <item
         android:id="@+id/brightness"
         android:title="brightness"
-        android:icon="@drawable/sun"
+        android:icon="@drawable/drawer_24"
         app:showAsAction="always"/>
 </menu>

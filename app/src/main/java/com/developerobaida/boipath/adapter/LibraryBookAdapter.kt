@@ -8,6 +8,7 @@ import com.developerobaida.boipath.R
 import com.developerobaida.boipath.activity.BookReaderActivity
 import com.developerobaida.boipath.data.local.entity.DownloadedBooks
 import com.developerobaida.boipath.databinding.ItemBook2Binding
+import com.developerobaida.boipath.model.Constant.BASE_URL
 import com.squareup.picasso.Picasso
 
 class LibraryBookAdapter(val list: List<DownloadedBooks>) : RecyclerView.Adapter<LibraryBookAdapter.BookView>() {
@@ -18,7 +19,7 @@ class LibraryBookAdapter(val list: List<DownloadedBooks>) : RecyclerView.Adapter
             binding.writer.text = book.author
 
 
-            Picasso.get().load(book.bookCover).error(R.drawable.book).into(binding.bookCover)
+            Picasso.get().load(BASE_URL+"storage/"+book.bookCover).placeholder(R.drawable.place_holder_book).error(R.drawable.place_holder_book).into(binding.bookCover)
 
             binding.root.setOnClickListener {
                 val intent = Intent(binding.root.context,BookReaderActivity::class.java)

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overlayTextActions"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="#DDFFFFFF"
+    android:elevation="6dp"
+    android:visibility="gone"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnBookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bookmark" />
+
+        <Button
+            android:id="@+id/btnHighlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Highlight" />
+
+        <Button
+            android:id="@+id/btnNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/etNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write a note"
+        android:visibility="gone"
+        android:background="@android:drawable/editbox_background" />
+
+    <LinearLayout
+        android:id="@+id/colorPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp">
+
+        <!-- Add few color buttons -->
+        <Button android:backgroundTint="#FFFF00" android:layout_width="30dp" android:layout_height="30dp" android:tag="#FFFF00"/>
+        <Button android:backgroundTint="#FFB6C1" android:layout_width="30dp" android:layout_height="30dp" android:tag="#FFB6C1"/>
+        <Button android:backgroundTint="#90EE90" android:layout_width="30dp" android:layout_height="30dp" android:tag="#90EE90"/>
+    </LinearLayout>
+</LinearLayout>

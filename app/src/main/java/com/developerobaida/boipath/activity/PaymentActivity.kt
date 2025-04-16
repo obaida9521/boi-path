@@ -37,7 +37,6 @@ class PaymentActivity : AppCompatActivity() , SSLCTransactionResponseListener{
 
 
         binding.pay.setOnClickListener {
-
             sslSetup("20")
         }
     }

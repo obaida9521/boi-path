@@ -300,7 +300,7 @@
                         android:id="@+id/writerImg"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/dwewf"
+                        android:src="@drawable/user"
                         app:shapeAppearanceOverlay="@style/CircularImg"
                         android:scaleType="centerCrop"
                         />

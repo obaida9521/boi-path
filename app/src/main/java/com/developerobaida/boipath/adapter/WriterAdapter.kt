@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.developerobaida.boipath.R
 import com.developerobaida.boipath.activity.WriterActivity
 import com.developerobaida.boipath.databinding.ItemWriterBinding
+import com.developerobaida.boipath.model.Constant.BASE_URL
 import com.developerobaida.boipath.model.WriterModel
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
@@ -19,7 +20,7 @@ class WriterAdapter(val list: List<WriterModel>) : RecyclerView.Adapter<WriterAd
         val langFormat = NumberFormat.getInstance(Locale("bn", "BD"))
         fun bind(model: WriterModel){
             if (model.image != null){
-                Picasso.get().load(model.image).placeholder(R.drawable.dwewf).into(binding.writerImg)
+                Picasso.get().load(BASE_URL+"storage/"+model.image).placeholder(R.drawable.dwewf).into(binding.writerImg)
             }else binding.writerImg.setImageResource(R.drawable.pic1)
 
 
